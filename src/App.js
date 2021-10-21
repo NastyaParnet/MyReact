@@ -1,9 +1,10 @@
 import "./styles/App.css"
 import PostForm from "./components/PostForm"
 import PostList from "./components/PostList"
-import MyInput from './components/UI/input/MyInput'
-import MySelect from './components/UI/select/MySelect'
-import { useMemo, useState } from "react"
+import { useState } from "react"
+import { usePosts } from "./hooks/usePosts"
+import MyModal from "./components/UI/MyModal/MyModal"
+import PostFilter from "./components/PostFilter"
 
 
 function App() {
@@ -12,22 +13,13 @@ function App() {
     {id: 2, name: 'React', comments: 'It is interesting'},
     {id: 3, name: 'Angular', comments: 'Not so bad'}
   ])
-  const [selectedSort, setSelectedSort] = useState('')
-  const [searchQuery, setSearchQuery] = useState('')
-
-  const sortedPosts = useMemo (() => {
-    if(selectedSort) {
-      return [...posts].sort((a,b) => a[selectedSort].localeCompare(b[selectedSort]))
-    }
-    return posts;
-  }, [selectedSort, posts])
-
-  const SearchAndSortedPosts = useMemo (() => {
-    return sortedPosts.filter(post => post.name.toLowerCase().includes(searchQuery.toLowerCase()))
-  }, [searchQuery, sortedPosts])
+  const [filter, setFilter] = useState({sort: '', query: ''})
+  const [modal, setModal] = useState(false)
+  const searchAndSortedPosts = usePosts(posts, filter.sort, filter.query)
 
   function AddNewPost(post){
     setPosts([...posts, {...post, id:posts.length+1}])
+    setModal(false)
   }
 
   function remove (post) {
@@ -36,24 +28,17 @@ function App() {
 
   return (
     <div className="App">
-      <PostForm add={AddNewPost}/>
-      <MyInput 
-        value={searchQuery}
-        onChange={setSearchQuery}
+      <button style={{marginTop: 30}} onClick={()=> setModal(true)}>
+        Додати пост
+      </button>
+      <MyModal modal={modal} setModal={setModal}> 
+        <PostForm add={AddNewPost}/>
+      </MyModal>
+      <PostFilter
+        filter={filter}
+        setFilter={setFilter}
       />
-      <MySelect 
-        value={selectedSort}
-        onChange={setSelectedSort}
-        defaultValue='Сортування'
-        options = {[
-          {value:"name", name: 'По назві'},
-          {value:"comments", name: 'По комментарям'}
-        ]}
-      />
-      {SearchAndSortedPosts!==0
-        ? <PostList remove={remove} title={"Наші новини"} posts={SearchAndSortedPosts}/> 
-        : <h1>Посты не найдены</h1>
-      }
+      <PostList remove={remove} title={"Наші новини"} posts={searchAndSortedPosts}/> 
     </div>
   );
 }

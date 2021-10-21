@@ -1,13 +1,9 @@
 import React from "react";
 
-const MyInput = ({value, onChange}) => {
+const MyInput = React.forwardRef((props, ref) => {
     return(
-        <input
-            value={value}
-            onChange={e => onChange(e.target.value)}
-            placeholder="Пошук"
-        />
+        <input ref={ref} {...props}/>
     )
-}
+})
 
 export default MyInput
