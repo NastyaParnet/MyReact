@@ -3,14 +3,14 @@ import React, { useState } from "react";
 
 const PostForm = ({add}) => {
     const [post, setPost] = useState({
-        name: '', comments: '' 
+        name: '', body: '' 
     })
 
     function create(e){
         e.preventDefault()
-        if (post.name!=='' && post.comments!==''){
+        if (post.name!=='' && post.body!==''){
             add({...post})
-            setPost({name: '', comments: ''})
+            setPost({name: '', body: ''})
         }
     }
 
@@ -23,10 +23,10 @@ const PostForm = ({add}) => {
                 onChange={e => setPost({...post, name: e.target.value})}
             />
             <input 
-                value={post.comments}
+                value={post.body}
                 type="text" 
                 placeholder="Введіть інформацію про пост" 
-                onChange = {e => setPost({...post, comments: e.target.value})}
+                onChange = {e => setPost({...post, body: e.target.value})}
             />
             <button onClick={create}>Передати дані</button>
         </div>

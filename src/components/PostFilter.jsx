@@ -16,7 +16,7 @@ const PostFilter = ({filter, setFilter}) => {
                 defaultValue='Сортування'
                 options = {[
                 {value:"name", name: 'По назві'},
-                {value:"comments", name: 'По комментарям'}
+                {value:"body", name: 'По комментарям'}
                 ]}
             />
         </div>
