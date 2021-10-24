@@ -6,16 +6,14 @@ import { usePosts } from "./hooks/usePosts"
 import MyModal from "./components/UI/MyModal/MyModal"
 import PostFilter from "./components/PostFilter"
 import PostService from "./API/PostService"
+import Loader from "./components/UI/Loader/Loader"
 
 
 function App() {
-  const [posts, setPosts] = useState([
-    {id: 1, name: 'JavaScript', body: 'Comments'},
-    {id: 2, name: 'React', body: 'It is interesting'},
-    {id: 3, name: 'Angular', body: 'Not so bad'}
-  ])
+  const [posts, setPosts] = useState([])
   const [filter, setFilter] = useState({sort: '', query: ''})
   const [modal, setModal] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const searchAndSortedPosts = usePosts(posts, filter.sort, filter.query)
 
   useEffect(()=>{
@@ -28,9 +26,10 @@ function App() {
   }
 
   async function fetchPosts(){
+    setIsLoading(true)
     const postService = await PostService.getAll()
     setPosts(postService)
-    console.log(posts)
+    setIsLoading(false)
   }
 
   function remove (post) {
@@ -49,7 +48,10 @@ function App() {
         filter={filter}
         setFilter={setFilter}
       />
-      <PostList remove={remove} title={"Наші новини"} posts={searchAndSortedPosts}/> 
+      {isLoading
+        ? <div style={{display: 'flex', justifyContent: 'center', marginTop: '50px'}}><Loader/></div>
+        : <PostList remove={remove} title={"Наші новини"} posts={searchAndSortedPosts}/> 
+      }
     </div>
   );
 }

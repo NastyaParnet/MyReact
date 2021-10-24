@@ -2,7 +2,7 @@ import React from "react";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import PostItem from "./PostItem";
 
-const PostList = ({posts, title, remove}) => {
+const PostList = ({remove, title, posts}) => {
     if (!posts.length){
         return (
             <div>
